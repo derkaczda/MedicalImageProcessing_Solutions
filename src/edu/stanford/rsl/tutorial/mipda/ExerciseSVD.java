@@ -110,7 +110,7 @@ public class ExerciseSVD {
 			System.out.println("A = " + A.toString());
 			
 			//Compute the SVD of A				
-			DecompositionSVD svd = null; //TODO
+			DecompositionSVD svd = new DecompositionSVD(A, true, true, true); //TODO
 			
 			//Check output: re-compute A = U * S * V^T
 			if (svd != null) {
@@ -123,7 +123,10 @@ public class ExerciseSVD {
 		}
 		
 		public int minDim(SimpleMatrix A) {
-			return 0; //TODO
+			SimpleVector diag = A.getDiag();
+			float epsilon = 1e-3f;
+			int minDimension = diag.getLen();
+			return minDimension; //TODO
 		}
 		
 		public SimpleMatrix lowRankMatrix(SimpleMatrix A, int minDim){
@@ -143,7 +146,7 @@ public class ExerciseSVD {
 			}
 				
 			SimpleMatrix templowrank = SimpleOperators.multiplyMatrixProd(svd.getU(), Slowrank);
-			SimpleMatrix Alowrank = null; //TODO
+			SimpleMatrix Alowrank = SimpleOperators.multiplyMatrixProd(templowrank, svd.getV().transposed()); //TODO
 			if (Alowrank != null) {
 				System.out.println("A rank deficient = " + Alowrank.toString());
 			}
@@ -158,31 +161,31 @@ public class ExerciseSVD {
 			br.add(diff);
 			//solve for x and xr
 			SimpleVector x = SimpleOperators.multiply(Ainv, b);
-			System.out.println(x.toString());
+			System.out.println("x = " + x.toString());
 			
 			SimpleVector xr = SimpleOperators.multiply(Ainv, br);
-			System.out.println(xr.toString());
+			System.out.println("xr = " + xr.toString());
 			
 			//We want only the difference caused by the change	
 			SimpleVector xn = vecDiff(xr, x); //There is a TODO here!
+			System.out.println("xn = " + xn.toString());
 			
 			//Alternatively:
 			//SimpleVector bn = SimpleOperators.subtract(br, b);
 			//SimpleVector xn = SimpleOperators.multiply(Ainv, bn);
 			
 			// compute and show percentual change
-			SimpleVector xPercentage = null; //TODO
-			//TODO
+			SimpleVector xPercentage = SimpleOperators.divideElementWise(xn, x); //TODO
 			return xPercentage;
 			
 		}
 		
 		public SimpleVector vecDiff(SimpleVector x1, SimpleVector x2) {
-			return null; //TODO
+			return SimpleOperators.subtract(x1, x2); //TODO
 		}
 		
 		public int newRank(int oldRank, int rankDeficiency) {
-			return 0; //TODO
+			return oldRank - rankDeficiency; //TODO
 		}
 		
 		public SimpleMatrix optimizationProblem1(SimpleMatrix A, int svdNewRank)
@@ -231,8 +234,8 @@ public class ExerciseSVD {
 			}
 			
 			//compute A0
-			SimpleMatrix tempA0 = null; //TODO
-			SimpleMatrix A0 = null; //TODO
+			SimpleMatrix tempA0 = SimpleOperators.multiplyMatrixProd(svd.getU(), Slowrank); //TODO
+			SimpleMatrix A0 = SimpleOperators.multiplyMatrixProd(tempA0, svd.getV().transposed()); //TODO
 			
 			if (A0 != null) {
 				System.out.println("A0 = " + A0.toString());
@@ -334,7 +337,7 @@ public class ExerciseSVD {
 		
 		public float calculateRMSE(Grid2D image1, Grid2D image2) {
 			NumericGridOperator op = new NumericGridOperator();
-			float rmse = 0; //TODO
+			float rmse = op.rmse(image1, image2); //TODO
 			return rmse;
 		}
 		
@@ -360,8 +363,8 @@ public class ExerciseSVD {
 			
 			for(int i = 0; i < xCoords.length; i++)//TODO
 			{
-				aCol.setElementValue(i, 0);//TODO
-				y.setElementValue(i, 0);//TODO
+				aCol.setElementValue(i, xCoords[i]);//TODO
+				y.setElementValue(i, yCoords[i]);//TODO
 			}
 			
 			A4.setColValue(0, aCol);
