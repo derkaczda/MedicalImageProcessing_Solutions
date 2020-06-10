@@ -157,9 +157,10 @@ public class ExerciseUM {
 				float val =  (float)(1 - beta * Math.exp(-(Math.pow(fk, 2) + Math.pow(fl, 2))/(2*Math.pow(sigma, 2))));  // TODO
 				// TODO: setRealAtIndex for fftimage
 				// TODO: setImageAtIndex for fftimage
-				float val2 = fftimage.getAtIndex(l,k);
-				fftimage.setRealAtIndex(l,k, val2 * val);
-				fftimage.setImagAtIndex(l,k, val2 * val);
+				float real = fftimage.getRealAtIndex(l, k);
+				float imag = fftimage.getImagAtIndex(l, k);
+				fftimage.setRealAtIndex(l,k, real * val);
+				fftimage.setImagAtIndex(l,k, imag * val);
 			}
 		}
 
