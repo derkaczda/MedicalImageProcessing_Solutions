@@ -30,7 +30,7 @@ public class ExercisePB {
 	public enum RampFilterType {NONE, RAMLAK, SHEPPLOGAN};
 	boolean filterShownOnce = false;
 	
-	RampFilterType filterType = RampFilterType.NONE; //TODO: Select one of the following values: NONE, RAMLAK, SHEPPLOGAN
+	RampFilterType filterType = RampFilterType.RAMLAK; //TODO: Select one of the following values: NONE, RAMLAK, SHEPPLOGAN
 	// (make this choice when you have finished the rest of the exercise)
 	
 	SheppLogan sheppLoganPhantom;
@@ -124,7 +124,7 @@ public class ExercisePB {
 		if (!filterShownOnce)
 			ramp.show("Ramp Filter in Spatial Domain (rearranged for FFT-Shift)");
 		
-		// <your code> // TODO: Transform the filter into frequency domain (look for an appropriate method of Grid1DComplex)
+		ramp.transformForward(); // TODO: Transform the filter into frequency domain (look for an appropriate method of Grid1DComplex)
 		
 		if(!filterShownOnce) {
 			
@@ -132,16 +132,20 @@ public class ExercisePB {
 			filterShownOnce = true;
 		}
 
-		Grid1DComplex projectionF = null;// TODO: Transform the input sinogram signal ...
-		// <your code> // ... into the frequency domain (hint: similar to the last TODO)
+		Grid1DComplex projectionF = new Grid1DComplex(projection);// TODO: Transform the input sinogram signal ...
+		projectionF.transformForward(); // ... into the frequency domain (hint: similar to the last TODO)
 		
 		if (projectionF != null) {
 			for(int p = 0; p < projectionF.getSize()[0]; p++){
-				// <your code> // TODO: Multiply the transformed sinogram with the ramp filter (complex multiplication) 
+				
+				// TODO: Multiply the transformed sinogram with the ramp filter (complex multiplication) 
+				float rampReal = ramp.getRealAtIndex(p);
+				float rampImag = ramp.getImagAtIndex(p);
+				projectionF.multiplyAtIndex(p, rampReal, rampImag);
 			}	
 		}
 
-		// <your code> // TODO: transform back to get the filtered sinogram (i.e. invert the Fourier transform)
+		projectionF.transformInverse(); // TODO: transform back to get the filtered sinogram (i.e. invert the Fourier transform)
 				
 		// crop the image to its initial size
 		Grid1D grid = new Grid1D(projection);
@@ -158,13 +162,12 @@ public class ExercisePB {
 	public void ramlak(Grid1DComplex filterGrid, int paddedSize, double deltaS) {
 
 		final float constantFactor = -1.f / ((float) ( Math.PI * Math.PI * deltaS * deltaS));
-		
-		// <your code>  // TODO: set correct value in filterGrid for zero frequency
-		
+		filterGrid.setAtIndex(0, (float)(1.f/(4*deltaS*deltaS)));  // TODO: set correct value in filterGrid for zero frequency
 		for (int i = 1; i < paddedSize/2; ++i) { // the "positive wing" of the filter 
 			
-			if (false) {// TODO: condition -> only odd indices are nonzero
-				// <your code> // TODO: use setAtIndex and the constant "constantFactor"
+			if (i % 2 != 0) {// TODO: condition -> only odd indices are nonzero
+				filterGrid.setRealAtIndex(i, constantFactor * (float)(1.0f/(float)(i*i))); // TODO: use setAtIndex and the constant "constantFactor"
+				filterGrid.setImagAtIndex(i, constantFactor * (float)(1.0f/(float)(i*i)));
 			}
 		}
 		
@@ -173,10 +176,13 @@ public class ExercisePB {
 		for (int i = paddedSize / 2; i < paddedSize; ++i) { 
 			
 			final int tmp = paddedSize - i; // now we go back from N/2 to 1
-			if (false) {// TODO: condition -> only odd indices are nonzero
-				// <your code> // TODO: use setAtIndex and the constant "constantFactor"
+			if (tmp % 2 != 0) {// TODO: condition -> only odd indices are nonzero
+				filterGrid.setRealAtIndex(i, constantFactor * (float)(1.f/(float)(tmp*tmp))); // TODO: use setAtIndex and the constant "constantFactor"
+				filterGrid.setImagAtIndex(i, constantFactor * (float)(1.f/(float)(tmp*tmp)));
+				
 			}
 		}
+		
 	}
 	
 	// TODO: implement the Shepp-Logan filter in the spatial domain
