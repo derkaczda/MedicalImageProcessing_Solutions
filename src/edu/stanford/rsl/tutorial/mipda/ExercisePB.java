@@ -30,7 +30,7 @@ public class ExercisePB {
 	public enum RampFilterType {NONE, RAMLAK, SHEPPLOGAN};
 	boolean filterShownOnce = false;
 	
-	RampFilterType filterType = RampFilterType.RAMLAK; //TODO: Select one of the following values: NONE, RAMLAK, SHEPPLOGAN
+	RampFilterType filterType = RampFilterType.SHEPPLOGAN; //TODO: Select one of the following values: NONE, RAMLAK, SHEPPLOGAN
 	// (make this choice when you have finished the rest of the exercise)
 	
 	SheppLogan sheppLoganPhantom;
@@ -163,11 +163,13 @@ public class ExercisePB {
 
 		final float constantFactor = -1.f / ((float) ( Math.PI * Math.PI * deltaS * deltaS));
 		filterGrid.setAtIndex(0, (float)(1.f/(4*deltaS*deltaS)));  // TODO: set correct value in filterGrid for zero frequency
+		//filterGrid.setImagAtIndex(0, (float)(1.f/(4*deltaS*deltaS)));
+		
 		for (int i = 1; i < paddedSize/2; ++i) { // the "positive wing" of the filter 
 			
 			if (i % 2 != 0) {// TODO: condition -> only odd indices are nonzero
-				filterGrid.setRealAtIndex(i, constantFactor * (float)(1.0f/(float)(i*i))); // TODO: use setAtIndex and the constant "constantFactor"
-				filterGrid.setImagAtIndex(i, constantFactor * (float)(1.0f/(float)(i*i)));
+				filterGrid.setAtIndex(i, constantFactor * (float)(1.0f/(float)(i*i))); // TODO: use setAtIndex and the constant "constantFactor"
+				//filterGrid.setImagAtIndex(i, constantFactor * (float)(1.0f/(float)(i*i)));
 			}
 		}
 		
@@ -177,8 +179,8 @@ public class ExercisePB {
 			
 			final int tmp = paddedSize - i; // now we go back from N/2 to 1
 			if (tmp % 2 != 0) {// TODO: condition -> only odd indices are nonzero
-				filterGrid.setRealAtIndex(i, constantFactor * (float)(1.f/(float)(tmp*tmp))); // TODO: use setAtIndex and the constant "constantFactor"
-				filterGrid.setImagAtIndex(i, constantFactor * (float)(1.f/(float)(tmp*tmp)));
+				filterGrid.setAtIndex(i, constantFactor * (float)(1.f/(float)(tmp*tmp))); // TODO: use setAtIndex and the constant "constantFactor"
+				//filterGrid.setImagAtIndex(i, constantFactor * (float)(1.f/(float)(tmp*tmp)));
 				
 			}
 		}
@@ -190,10 +192,14 @@ public class ExercisePB {
 		
 		final float constantFactor = - 2.f / ((float) ( Math.PI * Math.PI * deltaS * deltaS));
 		
-		// <your code> // TODO: set correct value in filterGrid for zero frequency
+		filterGrid.setAtIndex(0, -1.f * constantFactor); // TODO: set correct value in filterGrid for zero frequency
+		//filterGrid.setImagAtIndex(0, -1.f * constantFactor);
 		
 		for (int i = 1; i < paddedSize/2; ++i){ // the "positive wing" of the filter
-			// <your code> // TODO: use setAtIndex and the constant "constantFactor"
+			// TODO: use setAtIndex and the constant "constantFactor"
+			float nonconstant = 1.f / ((float)(4 * i * i - 1));
+			filterGrid.setAtIndex(i, constantFactor * nonconstant);
+			//filterGrid.setImagAtIndex(i, constantFactor * nonconstant);
 		}
 
 		// remark: the sorting of frequencies in the Fourier domain is 0,...,k,-k,...,1
@@ -201,7 +207,10 @@ public class ExercisePB {
 		for (int i = paddedSize / 2; i < paddedSize; ++i) {
 			
 			final float tmp = paddedSize - i; // now we go back from N/2 to 1
-			// <your code> // TODO: use setAtIndex and the constant "constantFactor"
+			// TODO: use setAtIndex and the constant "constantFactor"
+			float nonconstant = 1.f / ((float)(4 * tmp * tmp - 1));
+			filterGrid.setAtIndex(i, constantFactor * nonconstant);
+			//filterGrid.setImagAtIndex(i, constantFactor * nonconstant);
 		}
 	}
 
