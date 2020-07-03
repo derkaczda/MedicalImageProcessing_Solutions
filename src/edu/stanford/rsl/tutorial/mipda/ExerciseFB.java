@@ -13,6 +13,7 @@ import edu.stanford.rsl.tutorial.filters.RamLakKernel;
 import edu.stanford.rsl.tutorial.filters.SheppLoganKernel;
 import ij.IJ;
 import ij.ImageJ;
+import omero.Point;
 
 /**
  * Short Scan for Fan Beam Reconstruction
@@ -29,7 +30,7 @@ public class ExerciseFB {
 	//TODO: choose the ramp filter (NONE, RAMLAK, SHEPPLOGAN)
 	final RampFilterType filter = RampFilterType.RAMLAK;
 	//TODO: choose the sinogram data (Sinogram0.tif, Sinogram1.tif, Sinogram2.tif)
-	final String filename = "Sinogram0.tif";
+	final String filename = "Sinogram2.tif";
 	
 	// system parameters
 	final float focalLength = 600.f; // source to detector distance in [mm]
@@ -131,7 +132,8 @@ public class ExerciseFB {
 			// sqrt(D*D + t*t)
 			//
 			// D = focalLength
-			cosineKernel.setAtIndex(i, (float)(focalLength/(float)Math.sqrt(focalLength*focalLength + t*t))); //TODO (hint: use t and focalLength)
+			SimpleVector test = new SimpleVector(focalLength, t);
+			cosineKernel.setAtIndex(i, (focalLength/(float)test.normL2()));    //(float)Math.sqrt(Math.pow(focalLength,2) + Math.pow(t,2)))); //TODO (hint: use t and focalLength)
 		}
 		
 		//apply cosine weights to each projection
@@ -235,10 +237,10 @@ public class ExerciseFB {
 			
 			//compute the world coordinate point of the left detector edge (here: center of detector coincides with the origin)
 			float offset = -detectorLength/2.f;
-			final PointND detBorder = new PointND(0.f, 0.f, 0.f); //TODO
+			final PointND detBorder = new PointND(cosBeta * offset, sinBeta * offset, 0.f); //TODO
 			
 			//compute direction vector along the detector array (towards detector center)
-			SimpleVector dirDet = null; //TODO
+			SimpleVector dirDet = detBorder.getAbstractVector().clone();//TODO
 			if (dirDet == null)
 				dirDet = new SimpleVector(3);
 			dirDet.normalizeL2(); // ensure length == 1
@@ -264,10 +266,10 @@ public class ExerciseFB {
 					final PointND reconstructionPointWorld = new PointND(wx, wy, 0.f);
 
 					//intersect the projection ray with the detector
-					final StraightLine projectionLine = null; //TODO
+					final StraightLine projectionLine = new StraightLine(reconstructionPointWorld, source.getAbstractVector().normalizedL2()); //TODO
 					if (projectionLine != null)
 						projectionLine.setDirection(projectionLine.getDirection().normalizedL2()); // bugfix
-					final PointND detPixel = null; //TODO
+					final PointND detPixel = detLine.intersect(projectionLine); //TODO
 					
 					float valueTemp;
 					if(detPixel != null) {
@@ -312,7 +314,7 @@ public class ExerciseFB {
 	 */
 	public float getWorldCoordinate(int imCoordinate, int dim, float spacing) {
 
-		float wCoordinate = 0.f; //TODO
+		float wCoordinate = (float)( (imCoordinate - dim/2.0f+0.5f)*spacing); //TODO
 		
 		return wCoordinate;
 	}
@@ -326,9 +328,9 @@ public class ExerciseFB {
 	public float distanceWeight(PointND reconstructionPointWorld, float beta) {
 		
 		//Compute distance weight
-		float radius = 0.f; //TODO
-		float phi = 0.f; //TODO
-		float U = 0.f; //TODO
+		float radius = (float)reconstructionPointWorld.getAbstractVector().normL2(); //TODO
+		float phi = (float)(Math.PI / 2.f) + (float)Math.atan2(reconstructionPointWorld.get(1), reconstructionPointWorld.get(0)); //TODO
+		float U = (float)((focalLength + radius * Math.sin((beta - phi)))/focalLength); //TODO
 		
 		return U;
 	}
