@@ -74,8 +74,9 @@ public class ExerciseFB {
 
 		detectorLength = detectorPixels*detectorSpacing;
 
-		halfFanAngle = 1.0f; //TODO: determine the half fan angle such that the complete fan covers the detector exactly (hint: trigonometry) 
-		maxBeta = 1.0f; //TODO: compute the short scan minimum range using the value of halfFanAngle
+		// sin(halfFanAngle) = (detectorLenght / 2) / (focalLength)
+		halfFanAngle = (float)Math.atan((detectorLength * 0.5) / focalLength); //TODO: determine the half fan angle such that the complete fan covers the detector exactly (hint: trigonometry) 
+		maxBeta = (float)(Math.PI + 2.f * halfFanAngle); //TODO: compute the short scan minimum range using the value of halfFanAngle
 		betaIncrement = maxBeta/(float) numProjs;
 	}
 
