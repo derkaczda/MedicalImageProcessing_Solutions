@@ -124,8 +124,14 @@ public class ExerciseFB {
 		Grid1D cosineKernel = new Grid1D(detectorPixels);
 		for(int i=0; i < detectorPixels; ++i){
 			
-			float t = 0.f; //TODO: compute center of the current detector pixel (zero is center of detector)
-			cosineKernel.setAtIndex(i, 0.0f); //TODO (hint: use t and focalLength)
+			float temp = (i*detectorSpacing) + 0.5f * detectorSpacing - 0.5f * detectorLength;//(i + detectorPixels * 0.5f) - (0.5f * detectorLength);
+			float t = temp; //TODO: compute center of the current detector pixel (zero is center of detector)
+			//	D
+			// ---------------
+			// sqrt(D*D + t*t)
+			//
+			// D = focalLength
+			cosineKernel.setAtIndex(i, (float)(focalLength/(float)Math.sqrt(focalLength*focalLength + t*t))); //TODO (hint: use t and focalLength)
 		}
 		
 		//apply cosine weights to each projection
