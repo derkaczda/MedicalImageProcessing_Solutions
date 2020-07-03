@@ -28,7 +28,7 @@ public class ExerciseFB {
 	public enum RampFilterType {NONE, RAMLAK, SHEPPLOGAN};
 	
 	//TODO: choose the ramp filter (NONE, RAMLAK, SHEPPLOGAN)
-	final RampFilterType filter = RampFilterType.RAMLAK;
+	final RampFilterType filter = RampFilterType.SHEPPLOGAN;
 	//TODO: choose the sinogram data (Sinogram0.tif, Sinogram1.tif, Sinogram2.tif)
 	final String filename = "Sinogram2.tif";
 	
@@ -133,7 +133,9 @@ public class ExerciseFB {
 			//
 			// D = focalLength
 			SimpleVector test = new SimpleVector(focalLength, t);
-			cosineKernel.setAtIndex(i, (focalLength/(float)test.normL2()));    //(float)Math.sqrt(Math.pow(focalLength,2) + Math.pow(t,2)))); //TODO (hint: use t and focalLength)
+//			cosineKernel.setAtIndex(i, (float)Math.cos(focalLength/(float)test.normL2()));    //(float)Math.sqrt(Math.pow(focalLength,2) + Math.pow(t,2)))); //TODO (hint: use t and focalLength)
+			cosineKernel.setAtIndex(i, (float)Math.cos(Math.atan(Math.sqrt(t*t)/focalLength)));    //(float)Math.sqrt(Math.pow(focalLength,2) + Math.pow(t,2)))); //TODO (hint: use t and focalLength)
+
 		}
 		
 		//apply cosine weights to each projection
