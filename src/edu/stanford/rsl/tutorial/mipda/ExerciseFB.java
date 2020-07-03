@@ -173,8 +173,8 @@ public class ExerciseFB {
 				// implement the conditions as described in Parker's paper ( https://dx.doi.org/10.1118/1.595078 )
 				if (beta <= 2*(delta - gamma)) {
 
-					double tmp = 0.f; //TODO
-					float val = 1.f; //TODO
+					double tmp = (Math.PI / 4.f) * (beta / (delta - gamma)); //TODO
+					float val = (float)Math.pow(Math.sin(tmp), 2); //TODO
 					
 					if (Double.isNaN(val)){
 						continue;
@@ -188,7 +188,7 @@ public class ExerciseFB {
 				else if (beta <= (Math.PI + 2.f*delta) + 1e-12) {
 					
 					double tmp = Math.PI/4.f * (Math.PI + 2.f*delta - beta)/(delta + gamma); // (error in the original paper)
-					float val = 1.f; //TODO
+					float val = (float)Math.pow(Math.sin(tmp), 2); //TODO
 					
 					if (Double.isNaN(val)){
 						continue;
