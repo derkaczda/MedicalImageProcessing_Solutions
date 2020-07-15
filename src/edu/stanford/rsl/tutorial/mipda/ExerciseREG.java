@@ -70,12 +70,13 @@ public class ExerciseREG {
 		double t2 = x.getElement(3);
 		
 		//calculate the absolute value of r = r1+i*r2
-		double abs_r = 0.d;//TODO
+		double abs_r = Math.sqrt(r1*r1 + r2*r2);//TODO
 		//TODO: normalize r
-		//TODO: normalize r
+		r1 /= abs_r;
+		r2 /= abs_r;
 		
 		//calculate the angle phi
-		double phi = 0.d;//TODO
+		double phi = Math.atan2(r2, r1);//TODO
 		
 		// return both translation and rotation in a RigidParameters object
 		return new RigidParameters(phi,new SimpleVector(t1,t2));
@@ -87,19 +88,29 @@ public class ExerciseREG {
 		
 		SimpleMatrix m = new SimpleMatrix(2*numPoints, 4);
 		
-		// build up measurement matrix m for the complex numbers problem  
+		// build up measurement matrix m for the complex numbers problem
+		int j = 0;
 		for(int i = 0; i < numPoints; i++) {
 			
 			//real part of the problem (even rows)
-				//TODO
-				//TODO
-				//TODO
-				//TODO
+			//TODO
+			SimpleVector q_row = q.getRow(i);
+			m.setRowValue(j++,new SimpleVector(
+					q_row.getElement(0),
+					-q_row.getElement(1),
+					1, 
+					0
+			));
+			
 			//imaginary part of the problem (odd rows)
-				//TODO
-				//TODO
-				//TODO
-				//TODO
+			//TODO
+			m.setRowValue(j++,new SimpleVector(
+					q_row.getElement(1),
+					q_row.getElement(0),
+					0, 
+					1
+			));
+			
 		}
 		
 		return m;
@@ -111,10 +122,14 @@ public class ExerciseREG {
 
 		SimpleVector b = new SimpleVector(2*numPoints);// right hand side
 		
+		int j = 0;
 		for(int i = 0; i < numPoints; i++) {
 
+			SimpleVector p_row = p.getRow(i);
 			//TODO: real part of the problem
+			b.setElementValue(j++, p_row.getElement(0));
 			//TODO: imaginary part of the problem
+			b.setElementValue(j++, p_row.getElement(1));
 		}
 		
 		return b;
@@ -135,8 +150,12 @@ public class ExerciseREG {
 		// transform points (rotate and translate)
 		for(int i = 0; i < transformedPoints.getRows(); i++){
 			
+			SimpleVector point = points.getRow(i);
 			//TODO: rotate (you can use SimpleOperators)
+			point = SimpleOperators.multiply(r, point);
 			//TODO: translate (you can use SimpleOperators)
+			point = SimpleOperators.add(point, parameter.getTranslation());
+			transformedPoints.setRowValue(i, point);
 		}
 		
 		return transformedPoints;
