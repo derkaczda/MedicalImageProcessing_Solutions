@@ -129,11 +129,13 @@ public class ExerciseMI {
 				
 				if(jointHistogram.getElement(i, j) != 0) {
 					
+					double value = jointHistogram.getElement(i, j);
 					// calculate entropy of the joint histogram (hint: use logarithm base 2 and use the correct sign)
-					entropy_jointHisto = 1;//TODO
+					entropy_jointHisto += value*(Math.log(value)/Math.log(2));//TODO
 				}
 			}
 		}
+		entropy_jointHisto = -entropy_jointHisto;
 				
 		// b) Calculate the marginal entropies
 		double entropy_histo1 = 0;
@@ -143,16 +145,19 @@ public class ExerciseMI {
 			
 			if(histo1.getElement(i) != 0){
 				
+				double value = histo1.getElement(i);
 				// calculate entropy for histogram 1 (hint: use logarithm base 2 and use the correct sign)
-				entropy_histo1 = 1;//TODO
+				entropy_histo1 += value*(Math.log(value)/Math.log(2));//TODO
 			}
 			
 			if(histo2.getElement(i) != 0){
-				
+				double value = histo2.getElement(i);
 				// calculate entropy for histogram 2 (hint: use logarithm base 2 and use the correct sign)
-				entropy_histo2 = 1;//TODO
+				entropy_histo2 += value*(Math.log(value)/Math.log(2));//TODO
 			}
 		}
+		entropy_histo1 = -entropy_histo1;
+		entropy_histo2 = -entropy_histo2;
 
 		// Note: Make sure that you considered the correct sign in the entropy formulas!
 		
@@ -201,11 +206,13 @@ public class ExerciseMI {
 				// jH(k,l) counts how often the intensity pair k in the reference image, and l in the moving image occurs (at the corresponding location)
 				// use the correct indices and set the value for jH properly
 				//TODO
+				jH.addToElement(value_ref, value_mov, 1);
 			}
 		}
 		
 		// divide by the number of elements in order to get probabilities
 		//TODO
+		jH.divideBy(imWidth * imHeight);
 		
 		return jH;
 	}
@@ -229,15 +236,18 @@ public class ExerciseMI {
 			
 			for(int j = 0; j < numCols; j++) {
 				
+				double value = jH.getElement(i, j);
 				if (sumRows) {
 					
 					// sum up over the rows
 					//TODO
+					hist.addToElement(j, value);
 				}
 				else {
 					
 					// sum up over the columns
 					//TODO
+					hist.addToElement(i, value);
 				}				
 			}
 		}
